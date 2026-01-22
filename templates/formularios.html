@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
+{%block content%}
+<h1>Hola Mundo desde formularios</h1>
+<h1> {{titulo}}</h1>
 
-{ % block content %} 
-    <h1>Hola desde formularios</h1>
-{% endblock %}
-            
-     
+{% for usuario in lista %}
+<p> {{ usuario }} </p>
+{% endfor %}
+
+{%endblock%}

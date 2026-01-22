@@ -71,9 +71,31 @@ def operas1():
    
 @app.route("/resultado", methods=["GET", "POST"])
 def resultado():
-    n1=request.form.get("n1")
-    n2=request.form.get("n2")
-    return f"La suma es: {float(n1)+float(n2)}"
+    if request.method == "POST":
+        n1 = request.form.get("n1")
+        n2 = request.form.get("n2")
+        op = request.form.get("opciones")
+
+        if n1 and n2:
+            num1 = float(n1)
+            num2 = float(n2)
+            
+            if op == 'sumar':
+                res = num1 + num2
+                msg = "suma"
+            elif op == 'restar':
+                res = num1 - num2
+                msg = "resta"
+            elif op == 'multiplicar':
+                res = num1 * num2
+                msg = "multiplicación"
+            elif op == 'dividir':
+                res = num1 / num2 if num2 != 0 else "Error (división por cero)"
+                msg = "división"
+            
+            return f"<h1>El resultado de la {msg} es: {res}</h1> <a href='/'>Volver</a>"
+        
+        return "Error: Faltan datos por llenar."
 
 if __name__ == "__main__":
     app.run(debug=True)
