@@ -1,6 +1,13 @@
+import math
 from flask import Flask, render_template, request
+from flask import flash
+from flask_wtf.csrf import CSRFProtect
+
+import forms
 
 app = Flask(__name__)
+app.secret_key='clave screta'
+csrf=CSRFProtect()
 
 
 @app.route('/')
@@ -8,6 +15,28 @@ def index():
     titulo = "IDGS 802-Flask"
     lista = ['Juan', 'Karla', 'Miguel', 'Ana']
     return render_template('index.html', titulo=titulo, lista=lista)
+
+@app.route('/usuarios', methods =["GET", "POST"])
+def usuarios():
+    mat=0
+    nom=""
+    apa=''
+    ama=''
+    email=''
+
+    usuarios_class=forms.UserForm(request.form)
+    if request.method=='POST' and usuarios_class.validate():
+        mat=usuarios_class.matricula.data
+        nom=usuarios_class.nombre.data
+        apa=usuarios_class.apaterno.data
+        ama=usuarios_class.amaterno.data
+        email=usuarios_class.correo.data
+
+        mensaje="Bienvenido {}".format(nom)
+        flash(mensaje)
+
+    return render_template('usuarios.html', form=usuarios_class, 
+                           mat=mat, nom=nom, apa=apa, ama=ama, email=email)
 
 @app.route('/formularios')
 def formularios():
@@ -65,9 +94,30 @@ def operas():
     </form>
     '''
 
-@app.route("/operasBass")
+@app.route("/operasBass",  methods=["GET", "POST"])
 def operas1():
-    return render_template("operasBass.html")
+    operacion=""
+    n1=0
+    n2=0
+    res=0
+    if request.method == "POST":
+        n1=request.form.get("n1")
+        n2=request.form.get("n2")
+        operacion=request.form.get("opera")
+
+    if operacion == "suma":
+        res = float(n1) + float(n2)
+    elif operacion == "resta":
+        res = float(n1) - float(n2)
+    elif operacion == "multip":
+        res = float(n1) * float(n2)
+    elif operacion == "division":
+        res = float(n1) / float(n2)
+    else:
+        res = 0
+    return render_template("operasBass.html",n1=n1,n2=n2,res=res)
+
+
    
 @app.route("/resultado", methods=["GET", "POST"])
 def resultado():
@@ -93,9 +143,54 @@ def resultado():
                 res = num1 / num2 if num2 != 0 else "Error (división por cero)"
                 msg = "división"
             
-            return f"<h1>El resultado de la {msg} es: {res}</h1> <a href='/'>Volver</a>"
-        
+            return f"<h1>El resultado de la {msg} es: {res}</h1> <a href='/'>Volver</a>"  
         return "Error: Faltan datos por llenar."
+    
+
+
+@app.route("/distancia", methods=["GET", "POST"])
+def distancia():
+    x1=0
+    x2=0
+    y1=0
+    y2=0
+    res=0
+    if request.method == "POST":
+        x1 = float(request.form.get("x1"))
+        y1 = float(request.form.get("y1"))
+        x2 = float(request.form.get("x2"))
+        y2 = float(request.form.get("y2"))
+        res = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)  
+    return render_template("distancia.html", x1=x1, x2=x2, y1=y1, y2=y2, res=res)
+
+@app.route("/cinepolis", methods=["GET", "POST"])
+def cinepoli():
+    nombre="" 
+    total=0
+    mensaje =""
+    compradores=0
+    boletos = 0
+    tarjeta = ""
+    if request.method == "POST":
+        nombre = request.form.get("nombre")
+        compradores = int(request.form.get("compradores", 0))
+        boletos = int(request.form.get("boletos", 0))
+        tarjeta = request.form.get("tarjeta")=="true"
+        maximopermitido = compradores * 7
+        if boletos > maximopermitido:
+            mensaje = f"No se pueden comprar más de 7 boletos por persona"
+            total = 0
+        else: 
+            subtotal = boletos * 12
+            if boletos > 5:
+                subtotal *= 0.85  
+            elif 3 <= boletos <= 5:
+                subtotal *= 0.90 
+            if tarjeta:
+                subtotal *= 0.90  
+            total = subtotal
+    return render_template("cinepolis.html", nombre=nombre, compradores=compradores, boletos=boletos, total=total, mensaje=mensaje, tarjeta=tarjeta)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    csrf.init_app(app)
+    app.run(debug=True) 

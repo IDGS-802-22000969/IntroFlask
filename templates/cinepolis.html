@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% import "_macro.html" as macros %}
+{% import '_macro2.html' as forms %}
+
+{% block content %}
+<div class="container mt-4 p-4 shadow-lg mx-auto" style="background-color: #1a468d; color: white; border-radius: 10px; max-width: 700px;">
+    <h1 class="text-center mb-4">Cinépolis: La Capital del Cine</h1>
+    
+    <form action="/cinepolis" method="POST">
+        <div class="row g-3">
+            <div class="col-md-6 border p-3">
+                <h2 class="border-bottom mb-3 text-center">Entradas</h2>
+                
+                {{ macros.datos("nombre", "Nombre del cliente", "text", nombre) }}
+                {{ macros.datos("compradores", "Cantidad de compradores", "number", compradores) }}
+                {{ macros.datos("boletos", "Cantidad de boletos", "number", boletos) }}
+  
+                {{ forms.opcion("Tarjeta Cineco", "tarjeta") }}
+            </div>
+
+            <div class="col-md-6 d-flex flex-column gap-3">
+                <div class="border p-3 bg-white text-dark h-100">
+                    <h2 class="border-bottom mb-3 text-primary text-uppercase text-center">Salidas</h2>
+                    
+                    <div class="text-center mt-4">
+                        <p class="h5 text-muted mb-1">Valor a Pagar:</p>
+                        <hr class="my-2">
+                        <h2 class="fw-bold text-success">
+                            ${{ "{:,.2f}".format(total) if total else "0.00" }}
+                        </h2>
+                    </div>
+
+                    {% if mensaje %}
+                        <div class="alert alert-danger mt-3 p-2 small" role="alert">
+                            {{ mensaje }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="border p-3 text-center">
+                    <h4 class="mb-3 text-uppercase small">Acciones</h4>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-light btn-sm fw-bold shadow-sm">Procesar</button>
+                        <a href="/" class="btn btn-outline-light btn-sm">Salir</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

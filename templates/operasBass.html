@@ -1,15 +1,8 @@
 {% extends "layout.html" %}
-
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">Calculadora Flask</h3>
-                </div>
+
                 <div class="card-body">
-                    <form action="/resultado" method="POST">
+                    <form action="/operasBass" method="POST">
                         <div class="mb-3">
                             <label for="n1" class="form-label fw-bold">Número 1:</label>
                             <input type="number" step="any" class="form-control" id="n1" name="n1" placeholder="Ej: 10" required>
@@ -46,9 +39,4 @@
                         </div>
                     </form>
                 </div>
-            </div>
-            <p class="text-center mt-3 text-muted">Operaciones básicas</p>
-        </div>
-    </div>
-</div>
 {% endblock %}
