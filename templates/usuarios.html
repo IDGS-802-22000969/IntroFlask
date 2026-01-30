@@ -3,21 +3,21 @@
 {%import  "_macro.html" as macros %}
                     <form action="/usuarios" method="POST" novalidate>
                         {{form.csrf_token}}
-                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}"
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
                         <div class="mb-3">
-                            {{macro,campoNuevo(form.matricula,class="form-control")}}
-                        </div>
-                        div class="mb-3">
-                            {{macro,campoNuevo(form.nombre,class="form-control")}}
+                            {{macros.campoNuevo(form.matricula,class="form-control")}}
                         </div>
                         <div class="mb-3">
-                            {{macro,campoNuevo(form.apaterno,class="form-control")}}
+                            {{macros.campoNuevo(form.nombre,class="form-control")}}
                         </div>
                         <div class="mb-3">
-                            {{macro,campoNuevo(form.amaterno,class="form-control")}}
+                            {{macros.campoNuevo(form.apaterno,class="form-control")}}
                         </div>
                         <div class="mb-3">
-                             {{macro,campoNuevo(form.email,class="form-control")}}
+                            {{macros.campoNuevo(form.amaterno,class="form-control")}}
+                        </div>
+                        <div class="mb-3">
+                             {{macros.campoNuevo(form.correo,class="form-control")}}
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg">Calcular</button>
                     </form> <hr>
