@@ -9,8 +9,8 @@
 <td>{{field.label}}</td>
 <dd>{{field(**kwargs) | safe}}</dd>
 {% if field.errors %}
-    {% for error in field.error%}
+    {% for error in field.errors%}
          <li style="color: red">{{error}}</li>
-    {%endform%}
-{%endfi%}
+    {%endfor%}
+{% endif %}
 {% endmacro %}

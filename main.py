@@ -145,7 +145,6 @@ def resultado():
             
             return f"<h1>El resultado de la {msg} es: {res}</h1> <a href='/'>Volver</a>"  
         return "Error: Faltan datos por llenar."
-    
 
 
 @app.route("/distancia", methods=["GET", "POST"])
@@ -155,13 +154,14 @@ def distancia():
     y1=0
     y2=0
     res=0
+    cine_form=forms.CinepolisForm(request.form)
     if request.method == "POST":
         x1 = float(request.form.get("x1"))
         y1 = float(request.form.get("y1"))
         x2 = float(request.form.get("x2"))
         y2 = float(request.form.get("y2"))
         res = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)  
-    return render_template("distancia.html", x1=x1, x2=x2, y1=y1, y2=y2, res=res)
+    return render_template("distancia.html",form=cine_form, x1=x1, x2=x2, y1=y1, y2=y2, res=res)
 
 @app.route("/cinepolis", methods=["GET", "POST"])
 def cinepoli():
@@ -171,12 +171,16 @@ def cinepoli():
     compradores=0
     boletos = 0
     tarjeta = ""
-    if request.method == "POST":
-        nombre = request.form.get("nombre")
-        compradores = int(request.form.get("compradores", 0))
-        boletos = int(request.form.get("boletos", 0))
-        tarjeta = request.form.get("tarjeta")=="true"
+
+    cine_form=forms.CinepolisForm(request.form)
+    if request.method == "POST" and cine_form.validate():
+        nombre = cine_form.nombre.data
+        compradores = cine_form.compradores.data
+        boletos = cine_form.boletos.data
+        tarjeta = cine_form.tarjeta.data
+        
         maximopermitido = compradores * 7
+
         if boletos > maximopermitido:
             mensaje = f"No se pueden comprar más de 7 boletos por persona"
             total = 0
@@ -186,10 +190,16 @@ def cinepoli():
                 subtotal *= 0.85  
             elif 3 <= boletos <= 5:
                 subtotal *= 0.90 
-            if tarjeta:
+            if tarjeta=="true":
                 subtotal *= 0.90  
             total = subtotal
-    return render_template("cinepolis.html", nombre=nombre, compradores=compradores, boletos=boletos, total=total, mensaje=mensaje, tarjeta=tarjeta)
+    return render_template("cinepolis.html", form=cine_form,
+                            nombre=nombre, 
+                            compradores=compradores,
+                            boletos=boletos, 
+                            total=total, 
+                            mensaje=mensaje)
+
 
 if __name__ == "__main__":
     csrf.init_app(app)
